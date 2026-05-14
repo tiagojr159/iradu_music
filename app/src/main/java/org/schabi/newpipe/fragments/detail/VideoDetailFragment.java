@@ -1607,21 +1607,7 @@ public final class VideoDetailFragment
         final boolean overrideViewCount = prefs.getBoolean(
                 getString(R.string.return_youtube_dislike_override_view_count_key), true);
 
-        if (info.getViewCount() >= 0) {
-            if (info.getStreamType().equals(StreamType.AUDIO_LIVE_STREAM)) {
-                binding.detailViewCountView.setText(Localization.listeningCount(activity,
-                        info.getViewCount()));
-            } else if (info.getStreamType().equals(StreamType.LIVE_STREAM)) {
-                binding.detailViewCountView.setText(Localization
-                        .localizeWatchingCount(activity, info.getViewCount()));
-            } else {
-                binding.detailViewCountView.setText(Localization
-                        .localizeViewCount(activity, info.getViewCount()));
-            }
-            binding.detailViewCountView.setVisibility(View.VISIBLE);
-        } else {
-            binding.detailViewCountView.setVisibility(View.GONE);
-        }
+        displayViewCount(info);
 
         // RYD override: views
         if (rydInfo != null && isRydEnabled && overrideViewCount && rydInfo.viewCount > 0) {
@@ -1691,19 +1677,7 @@ public final class VideoDetailFragment
             binding.detailThumbsDisabledView.setVisibility(View.GONE);
         }
 
-        if (info.getDuration() > 0) {
-            binding.detailDurationView.setText(Localization.getDurationString(info.getDuration()));
-            binding.detailDurationView.setBackgroundColor(
-                    ContextCompat.getColor(activity, R.color.duration_background_color));
-            animate(binding.detailDurationView, true, 100);
-        } else if (info.getStreamType() == StreamType.LIVE_STREAM) {
-            binding.detailDurationView.setText(R.string.duration_live);
-            binding.detailDurationView.setBackgroundColor(
-                    ContextCompat.getColor(activity, R.color.live_duration_background_color));
-            animate(binding.detailDurationView, true, 100);
-        } else {
-            binding.detailDurationView.setVisibility(View.GONE);
-        }
+        displayDuration(info);
 
         binding.detailTitleRootLayout.setClickable(true);
         binding.detailToggleSecondaryControlsView.setRotation(0);
@@ -1747,6 +1721,40 @@ public final class VideoDetailFragment
         binding.detailControlsPopup.setVisibility(noVideoStreams ? View.GONE : View.VISIBLE);
         binding.detailThumbnailPlayButton.setImageResource(
                 noVideoStreams ? R.drawable.ic_headset_shadow : R.drawable.ic_play_arrow_shadow);
+    }
+
+    private void displayViewCount(@NonNull final StreamInfo info) {
+        if (info.getViewCount() >= 0) {
+            if (info.getStreamType().equals(StreamType.AUDIO_LIVE_STREAM)) {
+                binding.detailViewCountView.setText(Localization.listeningCount(activity,
+                        info.getViewCount()));
+            } else if (info.getStreamType().equals(StreamType.LIVE_STREAM)) {
+                binding.detailViewCountView.setText(Localization
+                        .localizeWatchingCount(activity, info.getViewCount()));
+            } else {
+                binding.detailViewCountView.setText(Localization
+                        .localizeViewCount(activity, info.getViewCount()));
+            }
+            binding.detailViewCountView.setVisibility(View.VISIBLE);
+        } else {
+            binding.detailViewCountView.setVisibility(View.GONE);
+        }
+    }
+
+    private void displayDuration(@NonNull final StreamInfo info) {
+        if (info.getDuration() > 0) {
+            binding.detailDurationView.setText(Localization.getDurationString(info.getDuration()));
+            binding.detailDurationView.setBackgroundColor(
+                    ContextCompat.getColor(activity, R.color.duration_background_color));
+            animate(binding.detailDurationView, true, 100);
+        } else if (info.getStreamType() == StreamType.LIVE_STREAM) {
+            binding.detailDurationView.setText(R.string.duration_live);
+            binding.detailDurationView.setBackgroundColor(
+                    ContextCompat.getColor(activity, R.color.live_duration_background_color));
+            animate(binding.detailDurationView, true, 100);
+        } else {
+            binding.detailDurationView.setVisibility(View.GONE);
+        }
     }
 
     private void displayUploaderAsSubChannel(final StreamInfo info) {

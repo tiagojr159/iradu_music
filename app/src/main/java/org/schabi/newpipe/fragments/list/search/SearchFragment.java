@@ -778,7 +778,8 @@ public class SearchFragment extends BaseListFragment<SearchInfo, ListExtractor.I
                     final boolean shallShowRemoteSuggestionsNow = showRemoteSuggestions
                             && query.length() >= THRESHOLD_NETWORK_SUGGESTION
                             && query.length() <= MAX_REMOTE_SUGGESTION_QUERY_LENGTH
-                            && query.trim().split("\\s+").length <= MAX_REMOTE_SUGGESTION_QUERY_WORDS;
+                            && query.trim().split("\\s+").length
+                            <= MAX_REMOTE_SUGGESTION_QUERY_WORDS;
 
                     if (showLocalSuggestions && shallShowRemoteSuggestionsNow) {
                         return Observable.zip(
