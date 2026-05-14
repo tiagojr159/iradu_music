@@ -262,7 +262,8 @@ public abstract class Tab {
         public Fragment getFragment(final Context context) {
             return SearchFragment.getInstance(
                     ServiceHelper.getSelectedServiceId(context),
-                    "noticias ao vivo"
+                    "globo news ao vivo cnn brasil ao vivo jovem pan news ao vivo "
+                            + "record news ao vivo sbt news ao vivo band jornalismo ao vivo"
             );
         }
     }
@@ -290,7 +291,8 @@ public abstract class Tab {
         public Fragment getFragment(final Context context) {
             return SearchFragment.getInstance(
                     ServiceHelper.getSelectedServiceId(context),
-                    "tecnologia inteligencia artificial programacao recentes"
+                    "inteligencia artificial tecnologia programacao codigo fonte tv "
+                            + "rocketseat akita hipsters ponto tech filipe deschamps"
             );
         }
     }

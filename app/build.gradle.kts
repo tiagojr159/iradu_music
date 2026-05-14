@@ -16,7 +16,10 @@ plugins {
 }
 
 val gitWorkingBranch = providers.exec {
+    // In some environments the project folder is not a git repository (or git isn't available).
+    // Don't fail the Gradle configuration/cache in that case.
     commandLine("git", "rev-parse", "--abbrev-ref", "HEAD")
+    isIgnoreExitValue = true
 }.standardOutput.asText.map { it.trim() }
 
 java {
