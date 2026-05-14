@@ -20,6 +20,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <View
+        android:id="@+id/itemTextScrim"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/video_item_search_image_right_margin"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="2dp"
+        android:background="@drawable/scrim_list_text_background"
+        app:layout_constraintBottom_toBottomOf="@+id/itemAdditionalDetails"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/itemThumbnailView"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <org.schabi.newpipe.views.NewPipeTextView
         android:id="@+id/itemDurationView"
         android:layout_width="wrap_content"
@@ -42,6 +55,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/video_item_search_image_right_margin"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="6dp"
         android:ellipsize="end"
         android:maxLines="2"
         android:textAppearance="?android:attr/textAppearanceLarge"
@@ -56,6 +71,7 @@
         android:id="@+id/itemUploaderView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
         android:ellipsize="end"
         android:lines="1"
         android:textAppearance="?android:attr/textAppearanceSmall"
@@ -70,6 +86,8 @@
         android:id="@+id/itemAdditionalDetails"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="6dp"
         android:ellipsize="end"
         android:lines="1"
         android:textAppearance="?android:attr/textAppearanceSmall"

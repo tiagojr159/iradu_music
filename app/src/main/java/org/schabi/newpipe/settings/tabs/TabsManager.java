@@ -31,15 +31,15 @@ public final class TabsManager {
     public List<Tab> getTabs() {
         final String savedJson = sharedPreferences.getString(savedTabsKey, null);
         try {
-            return ensureProfileTabFirst(TabsJsonHelper.getTabsFromJson(savedJson));
+            return getIraduTabs(TabsJsonHelper.getTabsFromJson(savedJson));
         } catch (final TabsJsonHelper.InvalidJsonException e) {
             Toast.makeText(context, R.string.saved_tabs_invalid_json, Toast.LENGTH_SHORT).show();
-            return ensureProfileTabFirst(getDefaultTabs());
+            return getDefaultTabs();
         }
     }
 
     public void saveTabs(final List<Tab> tabList) {
-        final String jsonToSave = TabsJsonHelper.getJsonToSave(ensureProfileTabFirst(tabList));
+        final String jsonToSave = TabsJsonHelper.getJsonToSave(getIraduTabs(tabList));
         sharedPreferences.edit().putString(savedTabsKey, jsonToSave).apply();
     }
 
@@ -48,28 +48,17 @@ public final class TabsManager {
     }
 
     public List<Tab> getDefaultTabs() {
-        return ensureProfileTabFirst(TabsJsonHelper.getDefaultTabs());
+        return getIraduTabs(TabsJsonHelper.getDefaultTabs());
     }
 
-    private List<Tab> ensureProfileTabFirst(final List<Tab> tabs) {
-        final ArrayList<Tab> normalizedTabs = new ArrayList<>();
-        normalizedTabs.add(Tab.Type.IRADU_PROFILE.getTab());
-        normalizedTabs.add(Tab.Type.LIVE_NEWS.getTab());
-        normalizedTabs.add(Tab.Type.TECH_NEWS.getTab());
-        for (final Tab tab : tabs) {
-            if (tab.getTabId() != Tab.IraduProfileTab.ID
-                    && tab.getTabId() != Tab.LiveNewsTab.ID
-                    && tab.getTabId() != Tab.TechNewsTab.ID
-                    && tab.getTabId() != Tab.FeedTab.ID
-                    && tab.getTabId() != Tab.SubscriptionsTab.ID
-                    && tab.getTabId() != 11) {
-                if (!(tab instanceof Tab.KioskTab kioskTab
-                        && "live".equals(kioskTab.getKioskId()))) {
-                    normalizedTabs.add(tab);
-                }
-            }
-        }
-        return normalizedTabs;
+    private List<Tab> getIraduTabs(final List<Tab> unusedTabs) {
+        final ArrayList<Tab> iraduTabs = new ArrayList<>();
+        iraduTabs.add(Tab.Type.IRADU_PROFILE.getTab());
+        iraduTabs.add(Tab.Type.ROCK_SEARCH.getTab());
+        iraduTabs.add(Tab.Type.LIVE_NEWS.getTab());
+        iraduTabs.add(Tab.Type.TECH_NEWS.getTab());
+        iraduTabs.add(Tab.Type.BOOKMARKS.getTab());
+        return iraduTabs;
     }
 
     /*//////////////////////////////////////////////////////////////////////////

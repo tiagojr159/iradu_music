@@ -4,7 +4,7 @@
     <color name="contrastColor">@color/black</color>
     <color name="defaultIconTint">@color/black</color>
 
-    <color name="ic_launcher_background">#05070B</color>
+    <color name="ic_launcher_background">#020205</color>
 
     <color name="placeholder_background">#999999</color>
     <color name="placeholder_foreground">#6C6C6C</color>
@@ -25,29 +25,29 @@
     <color name="light_border_color">#33000000</color>
 
     <!-- Dark Theme -->
-    <color name="dark_background_color">#05070B</color>
-    <color name="dark_dialog_background_color">#10141C</color>
-    <color name="dark_settings_accent_color">#00E5FF</color>
-    <color name="dark_separator_color">#18FFFFFF</color>
-    <color name="dark_ripple_color">#3300E5FF</color>
-    <color name="dark_selected_color">#2600E5FF</color>
-    <color name="dark_contrast_background_color">#2A1B2433</color>
+    <color name="dark_background_color">#020205</color>
+    <color name="dark_dialog_background_color">#0A0D12</color>
+    <color name="dark_settings_accent_color">#00F5FF</color>
+    <color name="dark_separator_color">#22FFFFFF</color>
+    <color name="dark_ripple_color">#3D00F5FF</color>
+    <color name="dark_selected_color">#30FF0A7A</color>
+    <color name="dark_contrast_background_color">#CC020205</color>
     <color name="dark_shadow_start_color">#82000000</color>
-    <color name="dark_license_background_color">#10141C</color>
+    <color name="dark_license_background_color">#0A0D12</color>
     <color name="dark_license_text_color">#ffffff</color>
     <color name="dark_queue_background_color">#af000000</color>
-    <color name="dark_card_item_background_color">#0B0F16</color>
-    <color name="dark_card_item_contrast_color">#151B26</color>
-    <color name="dark_border_color">#2E00E5FF</color>
+    <color name="dark_card_item_background_color">#CC020205</color>
+    <color name="dark_card_item_contrast_color">#E60A0D12</color>
+    <color name="dark_border_color">#6600F5FF</color>
 
     <!-- Black Theme -->
-    <color name="black_background_color">#020308</color>
+    <color name="black_background_color">#020205</color>
     <color name="black_settings_accent_color">@color/dark_settings_accent_color</color>
     <color name="black_separator_color">#18FFFFFF</color>
-    <color name="black_contrast_background_color">#24131A27</color>
-    <color name="black_card_item_background_color">#080B12</color>
-    <color name="black_card_item_contrast_color">#101722</color>
-    <color name="black_border_color">#2400E5FF</color>
+    <color name="black_contrast_background_color">#CC020205</color>
+    <color name="black_card_item_background_color">#D9020205</color>
+    <color name="black_card_item_contrast_color">#F20A0D12</color>
+    <color name="black_border_color">#6600F5FF</color>
 
     <!-- Miscellaneous -->
     <color name="queue_background_color">@color/dark_queue_background_color</color>
@@ -71,8 +71,8 @@
     <!-- GigaGet download Theme colors -->
     <color name="audio_left_to_load_color">#555555</color>
     <color name="audio_already_load_color">#000000</color>
-    <color name="video_left_to_load_color">#FF2D75</color>
-    <color name="video_already_load_color">#00E5FF</color>
+    <color name="video_left_to_load_color">#FF0A7A</color>
+    <color name="video_already_load_color">#00F5FF</color>
     <color name="subtitle_left_to_load_color">#264B66</color>
     <color name="subtitle_already_load_color">#00B7C7</color>
 
@@ -97,6 +97,6 @@
     <color name="pending_segment">#ffffff</color>
     
     <!-- Vote button colors -->
-    <color name="sponsor_block_vote_button_selected">#00E5FF</color>
+    <color name="sponsor_block_vote_button_selected">#00F5FF</color>
 
 </resources>

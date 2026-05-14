@@ -37,6 +37,7 @@
     <string name="tab_bookmarks">Bookmarked Playlists</string>
     <string name="tab_bookmarks_short">Playlists</string>
     <string name="iradu_profile_tab_title">iradu music</string>
+    <string name="iradu_rock_tab_title">Rock</string>
     <string name="iradu_live_news_tab_title">Live</string>
     <string name="iradu_tech_tab_title">Tecnologia</string>
     <string name="iradu_profile_role">Analista Desenvolvedor Full Stack</string>

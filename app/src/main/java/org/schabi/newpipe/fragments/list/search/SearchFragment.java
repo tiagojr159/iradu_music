@@ -99,6 +99,10 @@ public class SearchFragment extends BaseListFragment<SearchInfo, ListExtractor.I
      * (local ones will be fetched regardless of the length)
      */
     private static final int THRESHOLD_NETWORK_SUGGESTION = 1;
+    // Very long queries (like curated multi-channel searches) can cause the YouTube suggestions
+    // endpoint to return non-JSON error pages. For those, skip remote suggestions altogether.
+    private static final int MAX_REMOTE_SUGGESTION_QUERY_LENGTH = 64;
+    private static final int MAX_REMOTE_SUGGESTION_QUERY_WORDS = 6;
 
     /**
      * How much time have to pass without emitting a item (i.e. the user stop typing)
@@ -753,7 +757,8 @@ public class SearchFragment extends BaseListFragment<SearchInfo, ListExtractor.I
                         result.add(new SuggestionItem(false, entry));
                     }
                     return result;
-                });
+                })
+                .onErrorReturnItem(Collections.emptyList());
     }
 
     private void initSuggestionObserver() {
@@ -771,7 +776,9 @@ public class SearchFragment extends BaseListFragment<SearchInfo, ListExtractor.I
                     // Only show remote suggestions if they are enabled in settings and
                     // the query length is at least THRESHOLD_NETWORK_SUGGESTION
                     final boolean shallShowRemoteSuggestionsNow = showRemoteSuggestions
-                            && query.length() >= THRESHOLD_NETWORK_SUGGESTION;
+                            && query.length() >= THRESHOLD_NETWORK_SUGGESTION
+                            && query.length() <= MAX_REMOTE_SUGGESTION_QUERY_LENGTH
+                            && query.trim().split("\\s+").length <= MAX_REMOTE_SUGGESTION_QUERY_WORDS;
 
                     if (showLocalSuggestions && shallShowRemoteSuggestionsNow) {
                         return Observable.zip(

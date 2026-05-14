@@ -159,6 +159,7 @@ public abstract class Tab {
 
     public enum Type {
         IRADU_PROFILE(new IraduProfileTab()),
+        ROCK_SEARCH(new RockSearchTab()),
         LIVE_NEWS(new LiveNewsTab()),
         TECH_NEWS(new TechNewsTab()),
         BLANK(new BlankTab()),
@@ -239,6 +240,34 @@ public abstract class Tab {
         }
     }
 
+    public static class RockSearchTab extends Tab {
+        public static final int ID = 11;
+
+        @Override
+        public int getTabId() {
+            return ID;
+        }
+
+        @Override
+        public String getTabName(final Context context) {
+            return context.getString(R.string.iradu_rock_tab_title);
+        }
+
+        @DrawableRes
+        @Override
+        public int getTabIconRes(final Context context) {
+            return R.drawable.ic_search;
+        }
+
+        @Override
+        public Fragment getFragment(final Context context) {
+            return SearchFragment.getInstance(
+                    ServiceHelper.getSelectedServiceId(context),
+                    "melhores bandas de rock melhores musicas rock classico rock nacional"
+            );
+        }
+    }
+
     public static class LiveNewsTab extends Tab {
         public static final int ID = 12;
 
@@ -262,8 +291,7 @@ public abstract class Tab {
         public Fragment getFragment(final Context context) {
             return SearchFragment.getInstance(
                     ServiceHelper.getSelectedServiceId(context),
-                    "globo news ao vivo cnn brasil ao vivo jovem pan news ao vivo "
-                            + "record news ao vivo sbt news ao vivo band jornalismo ao vivo"
+                    "noticias ao vivo brasil globo news cnn brasil jovem pan news record news"
             );
         }
     }
@@ -291,8 +319,8 @@ public abstract class Tab {
         public Fragment getFragment(final Context context) {
             return SearchFragment.getInstance(
                     ServiceHelper.getSelectedServiceId(context),
-                    "inteligencia artificial tecnologia programacao codigo fonte tv "
-                            + "rocketseat akita hipsters ponto tech filipe deschamps"
+                    "inteligencia artificial programacao tecnologia ultimos 5 dias "
+                            + "codigo fonte tv rocketseat akita filipe deschamps"
             );
         }
     }
