@@ -20,11 +20,13 @@ import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.fragments.BlankFragment;
 import org.schabi.newpipe.fragments.IraduProfileFragment;
-import org.schabi.newpipe.fragments.list.search.SearchFragment;
 import org.schabi.newpipe.fragments.list.channel.ChannelFragment;
 import org.schabi.newpipe.fragments.list.kiosk.DefaultKioskFragment;
 import org.schabi.newpipe.fragments.list.kiosk.KioskFragment;
 import org.schabi.newpipe.fragments.list.playlist.PlaylistFragment;
+import org.schabi.newpipe.fragments.list.search.LiveNewsSearchFragment;
+import org.schabi.newpipe.fragments.list.search.RockSearchFragment;
+import org.schabi.newpipe.fragments.list.search.TechNewsSearchFragment;
 import org.schabi.newpipe.local.bookmark.BookmarkFragment;
 import org.schabi.newpipe.local.feed.FeedFragment;
 import org.schabi.newpipe.local.history.StatisticsPlaylistFragment;
@@ -261,10 +263,7 @@ public abstract class Tab {
 
         @Override
         public Fragment getFragment(final Context context) {
-            return SearchFragment.getRecentInstance(
-                    ServiceHelper.getSelectedServiceId(context),
-                    "rock"
-            );
+            return new RockSearchFragment();
         }
     }
 
@@ -289,10 +288,7 @@ public abstract class Tab {
 
         @Override
         public Fragment getFragment(final Context context) {
-            return SearchFragment.getRecentInstance(
-                    ServiceHelper.getSelectedServiceId(context),
-                    "noticias"
-            );
+            return new LiveNewsSearchFragment();
         }
     }
 
@@ -317,10 +313,7 @@ public abstract class Tab {
 
         @Override
         public Fragment getFragment(final Context context) {
-            return SearchFragment.getRecentInstance(
-                    ServiceHelper.getSelectedServiceId(context),
-                    "inteligencia artificial"
-            );
+            return new TechNewsSearchFragment();
         }
     }
 

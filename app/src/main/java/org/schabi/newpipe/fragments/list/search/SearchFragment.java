@@ -42,7 +42,6 @@ import androidx.core.text.HtmlCompat;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.evernote.android.state.State;
 
 import org.schabi.newpipe.R;
@@ -221,6 +220,23 @@ public class SearchFragment extends BaseListFragment<SearchInfo, ListExtractor.I
         return searchFragment;
     }
 
+    protected final void configureQuery(final int configuredServiceId,
+                                        final String configuredSearchString,
+                                        final boolean recentOnly) {
+        final boolean changed = serviceId != configuredServiceId
+                || !TextUtils.equals(searchString, configuredSearchString)
+                || onlyRecentResults != recentOnly;
+        setQuery(configuredServiceId, configuredSearchString, new String[0], "");
+        onlyRecentResults = recentOnly;
+        if (changed && infoListAdapter != null) {
+            infoListAdapter.clearStreamItemList();
+            nextPage = null;
+            setSearchOnResume();
+        } else if (!TextUtils.isEmpty(configuredSearchString)) {
+            setSearchOnResume();
+        }
+    }
+
     /**
      * Set wasLoading to true so when the fragment onResume is called, the initial search is done.
      */
@@ -254,6 +270,7 @@ public class SearchFragment extends BaseListFragment<SearchInfo, ListExtractor.I
     public void onViewCreated(@NonNull final View rootView, final Bundle savedInstanceState) {
         searchBinding = FragmentSearchBinding.bind(rootView);
         super.onViewCreated(rootView, savedInstanceState);
+        searchBinding.swipeRefreshLayout.setOnRefreshListener(this::reloadContent);
 
         updateService();
         // Add the service name to search string hint
@@ -428,6 +445,16 @@ public class SearchFragment extends BaseListFragment<SearchInfo, ListExtractor.I
     }
 
     @Override
+    public String generateSuffix() {
+        final String query = searchString == null ? "" : searchString;
+        final String filters = Arrays.toString(contentFilter);
+        final String sort = sortFilter == null ? "" : sortFilter;
+        final String key = serviceId + "|" + onlyRecentResults + "|" + query + "|"
+                + filters + "|" + sort;
+        return "." + Integer.toHexString(key.hashCode()) + super.generateSuffix();
+    }
+
+    @Override
     public void readFrom(@NonNull final Queue<Object> savedObjects) throws Exception {
         super.readFrom(savedObjects);
         nextPage = (Page) savedObjects.poll();
@@ -447,6 +474,9 @@ public class SearchFragment extends BaseListFragment<SearchInfo, ListExtractor.I
 
     @Override
     public void reloadContent() {
+        if (searchBinding != null) {
+            searchBinding.swipeRefreshLayout.setRefreshing(true);
+        }
         if (!TextUtils.isEmpty(searchString) || (searchEditText != null
                 && !isSearchEditBlank())) {
             search(!TextUtils.isEmpty(searchString)
@@ -1214,6 +1244,7 @@ public class SearchFragment extends BaseListFragment<SearchInfo, ListExtractor.I
 
     @Override
     public void handleNextItems(final ListExtractor.InfoItemsPage<?> result) {
+        stopRefreshing();
         showListFooter(false);
         infoListAdapter.addInfoItemList(filterRecentResults(result.getItems()));
 
@@ -1314,8 +1345,21 @@ public class SearchFragment extends BaseListFragment<SearchInfo, ListExtractor.I
     @Override
     public void handleError() {
         super.handleError();
+        stopRefreshing();
         hideSuggestionsPanel();
         hideKeyboardSearch();
+    }
+
+    @Override
+    public void showEmptyState() {
+        super.showEmptyState();
+        stopRefreshing();
+    }
+
+    private void stopRefreshing() {
+        if (searchBinding != null) {
+            searchBinding.swipeRefreshLayout.setRefreshing(false);
+        }
     }
 
     /*//////////////////////////////////////////////////////////////////////////

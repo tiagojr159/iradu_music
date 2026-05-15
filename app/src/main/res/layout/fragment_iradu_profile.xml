@@ -28,8 +28,8 @@
 
             <ImageView
                 android:id="@+id/iradu_profile_photo"
-                android:layout_width="148dp"
-                android:layout_height="148dp"
+                android:layout_width="164dp"
+                android:layout_height="164dp"
                 android:layout_gravity="center_horizontal"
                 android:adjustViewBounds="true"
                 android:background="@drawable/iradu_profile_photo_background"

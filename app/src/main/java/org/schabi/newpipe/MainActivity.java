@@ -68,7 +68,6 @@ import org.schabi.newpipe.error.ErrorUtil;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.comments.CommentsInfoItem;
-import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.services.peertube.PeertubeInstance;
 import org.schabi.newpipe.fragments.BackPressable;
 import org.schabi.newpipe.fragments.MainFragment;
@@ -84,7 +83,6 @@ import org.schabi.newpipe.settings.UpdateSettingsFragment;
 import org.schabi.newpipe.settings.migration.MigrationManager;
 import org.schabi.newpipe.util.Constants;
 import org.schabi.newpipe.util.DeviceUtils;
-import org.schabi.newpipe.util.KioskTranslator;
 import org.schabi.newpipe.util.Localization;
 import org.schabi.newpipe.util.NavigationHelper;
 import org.schabi.newpipe.util.PeertubeHelper;
@@ -119,14 +117,14 @@ public class MainActivity extends AppCompatActivity {
 
     private BroadcastReceiver broadcastReceiver;
 
-    private static final int ITEM_ID_SUBSCRIPTIONS = -1;
     private static final int ITEM_ID_FEED = -2;
-    private static final int ITEM_ID_BOOKMARKS = -3;
     private static final int ITEM_ID_DOWNLOADS = -4;
     private static final int ITEM_ID_HISTORY = -5;
+    private static final int ITEM_ID_IRADU_PROFILE = -20;
+    private static final int ITEM_ID_ROCK_TAB = -21;
+    private static final int ITEM_ID_NEWS_TAB = -22;
+    private static final int ITEM_ID_AI_TAB = -23;
     private static final int ITEM_ID_SETTINGS = 0;
-    private static final int ITEM_ID_DONATION = 1;
-    private static final int ITEM_ID_ABOUT = 2;
 
     private static final int ORDER = 0;
     public static final String KEY_IS_IN_BACKGROUND = "is_in_background";
@@ -183,7 +181,6 @@ public class MainActivity extends AppCompatActivity {
             invalidateOptionsMenu();
         });
         toolbarLayoutBinding.toolbarBrand.setOnClickListener(v -> openFourthMainTab());
-        toolbarLayoutBinding.toolbarBrandIcon.setOnClickListener(v -> openFourthMainTab());
         try {
             setupDrawer();
         } catch (final Exception e) {
@@ -243,7 +240,7 @@ public class MainActivity extends AppCompatActivity {
         sharedPrefEditor.putBoolean(KEY_IS_IN_BACKGROUND, true).apply();
         Log.d(TAG, "App moved to background");
     }
-    private void setupDrawer() throws ExtractionException {
+    private void setupDrawer() {
         addDrawerMenuForCurrentService();
 
         toggle = new ActionBarDrawerToggle(this, mainBinding.getRoot(),
@@ -275,21 +272,27 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Builds the drawer menu for the current service.
-     *
-     * @throws ExtractionException if the service didn't provide available kiosks
      */
-    private void addDrawerMenuForCurrentService() throws ExtractionException {
+    private void addDrawerMenuForCurrentService() {
         //Tabs
         drawerLayoutBinding.navigation.getMenu()
-                .add(R.id.menu_tabs_group, ITEM_ID_SUBSCRIPTIONS, ORDER,
-                        R.string.tab_subscriptions)
-                .setIcon(R.drawable.ic_tv);
+                .add(R.id.menu_tabs_group, ITEM_ID_IRADU_PROFILE, ORDER,
+                        R.string.iradu_profile_tab_title)
+                .setIcon(R.drawable.ic_music_note);
+        drawerLayoutBinding.navigation.getMenu()
+                .add(R.id.menu_tabs_group, ITEM_ID_ROCK_TAB, ORDER, R.string.iradu_rock_tab_title)
+                .setIcon(R.drawable.ic_search);
+        drawerLayoutBinding.navigation.getMenu()
+                .add(R.id.menu_tabs_group, ITEM_ID_NEWS_TAB, ORDER,
+                        R.string.iradu_live_news_tab_title)
+                .setIcon(R.drawable.ic_live_tv);
+        drawerLayoutBinding.navigation.getMenu()
+                .add(R.id.menu_tabs_group, ITEM_ID_AI_TAB, ORDER, R.string.iradu_tech_tab_title)
+                .setIcon(R.drawable.ic_computer);
+
         drawerLayoutBinding.navigation.getMenu()
                 .add(R.id.menu_tabs_group, ITEM_ID_FEED, ORDER, R.string.fragment_feed_title)
                 .setIcon(R.drawable.ic_subscriptions);
-        drawerLayoutBinding.navigation.getMenu()
-                .add(R.id.menu_tabs_group, ITEM_ID_BOOKMARKS, ORDER, R.string.tab_bookmarks)
-                .setIcon(R.drawable.ic_bookmark);
         drawerLayoutBinding.navigation.getMenu()
                 .add(R.id.menu_tabs_group, ITEM_ID_DOWNLOADS, ORDER, R.string.downloads)
                 .setIcon(R.drawable.ic_file_download);
@@ -297,34 +300,10 @@ public class MainActivity extends AppCompatActivity {
                 .add(R.id.menu_tabs_group, ITEM_ID_HISTORY, ORDER, R.string.action_history)
                 .setIcon(R.drawable.ic_history);
 
-        //Kiosks
-        final int currentServiceId = ServiceHelper.getSelectedServiceId(this);
-        final StreamingService service = NewPipe.getService(currentServiceId);
-        final boolean showKiosks = sharedPreferences.getBoolean(
-                getString(R.string.show_kiosks_key), true);
-
-        if (showKiosks) {
-            int kioskMenuItemId = 0;
-            for (final String ks : service.getKioskList().getAvailableKiosks()) {
-                drawerLayoutBinding.navigation.getMenu()
-                        .add(R.id.menu_kiosks_group, kioskMenuItemId, 0, KioskTranslator
-                                .getTranslatedKioskName(ks, this))
-                        .setIcon(KioskTranslator.getKioskIcon(ks));
-                kioskMenuItemId++;
-            }
-        }
-
         //Settings and About
         drawerLayoutBinding.navigation.getMenu()
                 .add(R.id.menu_options_about_group, ITEM_ID_SETTINGS, ORDER, R.string.settings)
                 .setIcon(R.drawable.ic_settings);
-        drawerLayoutBinding.navigation.getMenu()
-                .add(R.id.menu_options_about_group, ITEM_ID_DONATION, ORDER,
-                        R.string.donation_title)
-                .setIcon(R.drawable.volunteer_activism_ic);
-        drawerLayoutBinding.navigation.getMenu()
-                .add(R.id.menu_options_about_group, ITEM_ID_ABOUT, ORDER, R.string.tab_about)
-                .setIcon(R.drawable.ic_info_outline);
     }
 
     private boolean drawerItemSelected(final MenuItem item) {
@@ -333,12 +312,6 @@ public class MainActivity extends AppCompatActivity {
             changeService(item);
         } else if (groupId == R.id.menu_tabs_group) {
             tabSelected(item);
-        } else if (groupId == R.id.menu_kiosks_group) {
-            try {
-                kioskSelected(item);
-            } catch (final Exception e) {
-                ErrorUtil.showUiErrorSnackbar(this, "Selecting drawer kiosk", e);
-            }
         } else if (groupId == R.id.menu_options_about_group) {
             optionsAboutSelected(item);
         } else {
@@ -361,14 +334,20 @@ public class MainActivity extends AppCompatActivity {
 
     private void tabSelected(final MenuItem item) {
         switch (item.getItemId()) {
-            case ITEM_ID_SUBSCRIPTIONS:
-                NavigationHelper.openSubscriptionFragment(getSupportFragmentManager());
+            case ITEM_ID_IRADU_PROFILE:
+                openMainAndSelectTabId(org.schabi.newpipe.settings.tabs.Tab.IraduProfileTab.ID);
+                break;
+            case ITEM_ID_ROCK_TAB:
+                openMainAndSelectTabId(org.schabi.newpipe.settings.tabs.Tab.RockSearchTab.ID);
+                break;
+            case ITEM_ID_NEWS_TAB:
+                openMainAndSelectTabId(org.schabi.newpipe.settings.tabs.Tab.LiveNewsTab.ID);
+                break;
+            case ITEM_ID_AI_TAB:
+                openMainAndSelectTabId(org.schabi.newpipe.settings.tabs.Tab.TechNewsTab.ID);
                 break;
             case ITEM_ID_FEED:
                 NavigationHelper.openFeedFragment(getSupportFragmentManager());
-                break;
-            case ITEM_ID_BOOKMARKS:
-                NavigationHelper.openBookmarksFragment(getSupportFragmentManager());
                 break;
             case ITEM_ID_DOWNLOADS:
                 NavigationHelper.openDownloads(this);
@@ -379,16 +358,17 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void kioskSelected(final MenuItem item) throws ExtractionException {
-        final StreamingService currentService = ServiceHelper.getSelectedService(this);
-        int kioskMenuItemId = 0;
-        for (final String kioskId : currentService.getKioskList().getAvailableKiosks()) {
-            if (kioskMenuItemId == item.getItemId()) {
-                NavigationHelper.openKioskFragment(getSupportFragmentManager(),
-                        currentService.getServiceId(), kioskId);
-                break;
-            }
-            kioskMenuItemId++;
+    private void openMainAndSelectTabId(final int tabId) {
+        final FragmentManager fragmentManager = getSupportFragmentManager();
+        Fragment fragment = fragmentManager.findFragmentById(R.id.fragment_holder);
+        if (!(fragment instanceof MainFragment)) {
+            NavigationHelper.gotoMainFragment(fragmentManager);
+            fragmentManager.executePendingTransactions();
+            fragment = fragmentManager.findFragmentById(R.id.fragment_holder);
+        }
+
+        if (fragment instanceof MainFragment) {
+            ((MainFragment) fragment).selectTabById(tabId);
         }
     }
 
@@ -396,12 +376,6 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case ITEM_ID_SETTINGS:
                 NavigationHelper.openSettings(this);
-                break;
-            case ITEM_ID_DONATION:
-                ShareUtils.openUrlInBrowser(this, getString(R.string.donation_url));
-                break;
-            case ITEM_ID_ABOUT:
-                NavigationHelper.openAbout(this);
                 break;
         }
     }
