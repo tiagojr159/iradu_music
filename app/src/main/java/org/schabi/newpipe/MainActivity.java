@@ -177,6 +177,13 @@ public class MainActivity extends AppCompatActivity {
         }
 
         setSupportActionBar(toolbarLayoutBinding.toolbar);
+        getSupportFragmentManager().addOnBackStackChangedListener(() -> {
+            updateDrawerNavigation();
+            updateToolbarTitle();
+            invalidateOptionsMenu();
+        });
+        toolbarLayoutBinding.toolbarBrand.setOnClickListener(v -> openFourthMainTab());
+        toolbarLayoutBinding.toolbarBrandIcon.setOnClickListener(v -> openFourthMainTab());
         try {
             setupDrawer();
         } catch (final Exception e) {
@@ -718,7 +725,9 @@ public class MainActivity extends AppCompatActivity {
         final FragmentManager fm = getSupportFragmentManager();
         final Fragment fragment = fm.findFragmentById(R.id.fragment_holder);
 
-        if (fragment instanceof CommentRepliesFragment) {
+        if (fragment instanceof SearchFragment) {
+            NavigationHelper.gotoMainFragment(fm);
+        } else if (fragment instanceof CommentRepliesFragment) {
             // Expand DetailsFragment if CommentRepliesFragment was opened
             // and no other CommentRepliesFragments are on top of the back stack
             // to show the top level comments again.
@@ -815,6 +824,33 @@ public class MainActivity extends AppCompatActivity {
             mainBinding.getRoot().setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             toolbarLayoutBinding.toolbar.setNavigationOnClickListener(v -> onHomeButtonPressed());
+        }
+        updateToolbarTitle();
+    }
+
+    private void updateToolbarTitle() {
+        final Fragment fragment = getSupportFragmentManager()
+                .findFragmentById(R.id.fragment_holder);
+        final boolean isMainFragment = fragment instanceof MainFragment;
+        toolbarLayoutBinding.toolbarBrand.setVisibility(
+                isMainFragment ? View.VISIBLE : View.GONE);
+
+        final ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null && isMainFragment) {
+            actionBar.setDisplayShowTitleEnabled(false);
+        }
+    }
+
+    private void openFourthMainTab() {
+        final FragmentManager fragmentManager = getSupportFragmentManager();
+        Fragment fragment = fragmentManager.findFragmentById(R.id.fragment_holder);
+        if (!(fragment instanceof MainFragment)) {
+            NavigationHelper.gotoMainFragment(fragmentManager);
+            fragmentManager.executePendingTransactions();
+            fragment = fragmentManager.findFragmentById(R.id.fragment_holder);
+        }
+        if (fragment instanceof MainFragment) {
+            ((MainFragment) fragment).selectTabPosition(3);
         }
     }
 

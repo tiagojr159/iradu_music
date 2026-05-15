@@ -4,6 +4,7 @@
  */
 
 import com.android.build.api.dsl.ApplicationExtension
+import java.time.LocalDate
 
 plugins {
     alias(libs.plugins.android.application)
@@ -21,6 +22,10 @@ val gitWorkingBranch = providers.exec {
     commandLine("git", "rev-parse", "--abbrev-ref", "HEAD")
     isIgnoreExitValue = true
 }.standardOutput.asText.map { it.trim() }
+
+val datedAppName = LocalDate.now().let { date ->
+    "iradu music ${date.dayOfMonth}.${date.monthValue}"
+}
 
 java {
     toolchain {
@@ -43,7 +48,7 @@ configure<ApplicationExtension> {
 
     defaultConfig {
         applicationId = "org.polymorphicshade.tubular"
-        resValue("string", "app_name", "iradu music")
+        resValue("string", "app_name", datedAppName)
         minSdk = 21
         targetSdk = 35
 
@@ -69,17 +74,17 @@ configure<ApplicationExtension> {
             if (normalizedWorkingBranch.isEmpty() || workingBranch in defaultBranches) {
                 // default values when branch name could not be determined or is master or dev
                 applicationIdSuffix = ".debug"
-                resValue("string", "app_name", "iradu music")
+                resValue("string", "app_name", datedAppName)
             } else {
                 applicationIdSuffix = ".debug.$normalizedWorkingBranch"
-                resValue("string", "app_name", "iradu music $workingBranch")
+                resValue("string", "app_name", datedAppName)
             }
         }
 
         release {
             System.getProperty("packageSuffix")?.let { suffix ->
                 applicationIdSuffix = suffix
-                resValue("string", "app_name", "iradu music $suffix")
+                resValue("string", "app_name", datedAppName)
             }
             isMinifyEnabled = true
             isShrinkResources = true

@@ -10,7 +10,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Handler;
 import android.os.Bundle;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextUtils;
@@ -22,6 +24,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
@@ -53,12 +56,14 @@ import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.MetaInfo;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.Page;
+import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.search.SearchInfo;
 import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeSearchQueryHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory;
+import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.fragments.BackPressable;
 import org.schabi.newpipe.fragments.list.BaseListFragment;
 import org.schabi.newpipe.ktx.AnimationType;
@@ -71,13 +76,17 @@ import org.schabi.newpipe.util.ExtractorHelper;
 import org.schabi.newpipe.util.KeyboardUtil;
 import org.schabi.newpipe.util.NavigationHelper;
 import org.schabi.newpipe.util.ServiceHelper;
+import org.schabi.newpipe.util.StreamTypeUtil;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -103,6 +112,13 @@ public class SearchFragment extends BaseListFragment<SearchInfo, ListExtractor.I
     // endpoint to return non-JSON error pages. For those, skip remote suggestions altogether.
     private static final int MAX_REMOTE_SUGGESTION_QUERY_LENGTH = 64;
     private static final int MAX_REMOTE_SUGGESTION_QUERY_WORDS = 6;
+    private static final int RECENT_RESULTS_DAYS = 5;
+    private static final long AUTO_SEARCH_DEBOUNCE_MS = 450L;
+    private static final Pattern RELATIVE_NUMBER_PATTERN = Pattern.compile(
+            "(\\d+)\\s*(min|mins|minute|minutes|minuto|minutos|h|hr|hrs|hour|hours|hora|horas"
+                    + "|day|days|dia|dias)\\b",
+            Pattern.CASE_INSENSITIVE
+    );
 
     /**
      * How much time have to pass without emitting a item (i.e. the user stop typing)
@@ -147,6 +163,9 @@ public class SearchFragment extends BaseListFragment<SearchInfo, ListExtractor.I
     @State
     boolean wasSearchFocused = false;
 
+    @State
+    boolean onlyRecentResults = false;
+
     private final SparseArrayCompat<String> menuItemToFilterName = new SparseArrayCompat<>();
     private StreamingService service;
     @Nullable
@@ -170,8 +189,12 @@ public class SearchFragment extends BaseListFragment<SearchInfo, ListExtractor.I
     private View searchToolbarContainer;
     private EditText searchEditText;
     private View searchClear;
+    private View searchClearIcon;
 
     private boolean suggestionsPanelVisible = false;
+    private boolean suppressAutoSearch = false;
+    private final Handler autoSearchHandler = new Handler(Looper.getMainLooper());
+    private final Runnable autoSearchRunnable = this::submitSearchFromInput;
 
     /*////////////////////////////////////////////////////////////////////////*/
 
@@ -189,6 +212,12 @@ public class SearchFragment extends BaseListFragment<SearchInfo, ListExtractor.I
             searchFragment.setSearchOnResume();
         }
 
+        return searchFragment;
+    }
+
+    public static SearchFragment getRecentInstance(final int serviceId, final String searchString) {
+        final SearchFragment searchFragment = getInstance(serviceId, searchString);
+        searchFragment.onlyRecentResults = true;
         return searchFragment;
     }
 
@@ -385,6 +414,7 @@ public class SearchFragment extends BaseListFragment<SearchInfo, ListExtractor.I
         searchToolbarContainer = activity.findViewById(R.id.toolbar_search_container);
         searchEditText = searchToolbarContainer.findViewById(R.id.toolbar_search_edit_text);
         searchClear = searchToolbarContainer.findViewById(R.id.toolbar_search_clear);
+        searchClearIcon = searchToolbarContainer.findViewById(R.id.toolbar_search_clear_icon);
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -536,7 +566,7 @@ public class SearchFragment extends BaseListFragment<SearchInfo, ListExtractor.I
         if (DEBUG) {
             Log.d(TAG, "initSearchListeners() called");
         }
-        searchClear.setOnClickListener(v -> {
+        final View.OnClickListener clearClickListener = v -> {
             if (DEBUG) {
                 Log.d(TAG, "onClick() called with: v = [" + v + "]");
             }
@@ -544,13 +574,24 @@ public class SearchFragment extends BaseListFragment<SearchInfo, ListExtractor.I
                 NavigationHelper.gotoMainFragment(getFM());
                 return;
             }
-
-            searchBinding.correctSuggestion.setVisibility(View.GONE);
-
-            searchEditText.setText("");
-            suggestionListAdapter.submitList(null);
-            showKeyboardSearch();
+            clearSearchInput();
+        };
+        searchClear.setOnClickListener(clearClickListener);
+        searchClear.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                clearClickListener.onClick(v);
+            }
+            return false;
         });
+        if (searchClearIcon != null) {
+            searchClearIcon.setOnClickListener(clearClickListener);
+            searchClearIcon.setOnTouchListener((v, event) -> {
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    clearClickListener.onClick(v);
+                }
+                return false;
+            });
+        }
 
         TooltipCompat.setTooltipText(searchClear, getString(R.string.clear));
 
@@ -623,9 +664,22 @@ public class SearchFragment extends BaseListFragment<SearchInfo, ListExtractor.I
 
                 final String newText = getSearchEditString().trim();
                 suggestionPublisher.onNext(newText);
+                autoSearchHandler.removeCallbacks(autoSearchRunnable);
+                if (!suppressAutoSearch && !newText.isEmpty()
+                        && !newText.equals(searchString)) {
+                    autoSearchHandler.postDelayed(autoSearchRunnable, AUTO_SEARCH_DEBOUNCE_MS);
+                }
             }
         };
         searchEditText.addTextChangedListener(textWatcher);
+        searchEditText.setOnKeyListener((v, keyCode, event) -> {
+            if (keyCode == KeyEvent.KEYCODE_ENTER && event != null
+                    && event.getAction() == KeyEvent.ACTION_DOWN) {
+                submitSearchFromInput();
+                return true;
+            }
+            return false;
+        });
         searchEditText.setOnEditorActionListener(
                 (final TextView v, final int actionId, final KeyEvent event) -> {
                     if (DEBUG) {
@@ -634,11 +688,18 @@ public class SearchFragment extends BaseListFragment<SearchInfo, ListExtractor.I
                     }
                     if (actionId == EditorInfo.IME_ACTION_PREVIOUS) {
                         hideKeyboardSearch();
-                    } else if (event != null
-                            && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER
-                            || event.getAction() == EditorInfo.IME_ACTION_SEARCH)) {
-                        searchEditText.setText(getSearchEditString().trim());
-                        search(getSearchEditString(), new String[0], "");
+                        return true;
+                    }
+
+                    final boolean isSearchAction = actionId == EditorInfo.IME_ACTION_SEARCH
+                            || actionId == EditorInfo.IME_ACTION_DONE
+                            || actionId == EditorInfo.IME_ACTION_GO;
+                    final boolean isEnterKey = event != null
+                            && event.getKeyCode() == KeyEvent.KEYCODE_ENTER
+                            && event.getAction() == KeyEvent.ACTION_DOWN;
+
+                    if (isSearchAction || isEnterKey) {
+                        submitSearchFromInput();
                         return true;
                     }
                     return false;
@@ -655,14 +716,53 @@ public class SearchFragment extends BaseListFragment<SearchInfo, ListExtractor.I
         }
         searchClear.setOnClickListener(null);
         searchClear.setOnLongClickListener(null);
+        searchClear.setOnTouchListener(null);
+        if (searchClearIcon != null) {
+            searchClearIcon.setOnClickListener(null);
+            searchClearIcon.setOnTouchListener(null);
+        }
         searchEditText.setOnClickListener(null);
         searchEditText.setOnFocusChangeListener(null);
+        searchEditText.setOnKeyListener(null);
         searchEditText.setOnEditorActionListener(null);
 
         if (textWatcher != null) {
             searchEditText.removeTextChangedListener(textWatcher);
         }
         textWatcher = null;
+        autoSearchHandler.removeCallbacks(autoSearchRunnable);
+    }
+
+    private void clearSearchInput() {
+        autoSearchHandler.removeCallbacks(autoSearchRunnable);
+        searchBinding.correctSuggestion.setVisibility(View.GONE);
+        if (searchDisposable != null) {
+            searchDisposable.dispose();
+        }
+        suppressAutoSearch = true;
+        searchEditText.setText("");
+        suppressAutoSearch = false;
+        searchString = "";
+        lastSearchedString = "";
+        nextPage = null;
+        infoListAdapter.clearStreamItemList();
+        suggestionListAdapter.submitList(null);
+        showMetaInfoInTextView(null, searchBinding.searchMetaInfoTextView,
+                searchBinding.searchMetaInfoSeparator, disposables);
+        hideLoading();
+        hideSuggestionsPanel();
+        searchEditText.requestFocus();
+        showKeyboardSearch();
+    }
+
+    private void submitSearchFromInput() {
+        final String trimmedQuery = getSearchEditString().trim();
+        autoSearchHandler.removeCallbacks(autoSearchRunnable);
+        suppressAutoSearch = true;
+        searchEditText.setText(trimmedQuery);
+        searchEditText.setSelection(trimmedQuery.length());
+        suppressAutoSearch = false;
+        search(trimmedQuery, new String[0], "");
     }
 
     private void showSuggestionsPanel() {
@@ -1070,7 +1170,7 @@ public class SearchFragment extends BaseListFragment<SearchInfo, ListExtractor.I
 
         if (infoListAdapter.getItemsList().isEmpty()) {
             if (!result.getRelatedItems().isEmpty()) {
-                infoListAdapter.addInfoItemList(result.getRelatedItems());
+                infoListAdapter.addInfoItemList(filterRecentResults(result.getRelatedItems()));
             } else {
                 infoListAdapter.clearStreamItemList();
                 showEmptyState();
@@ -1115,7 +1215,7 @@ public class SearchFragment extends BaseListFragment<SearchInfo, ListExtractor.I
     @Override
     public void handleNextItems(final ListExtractor.InfoItemsPage<?> result) {
         showListFooter(false);
-        infoListAdapter.addInfoItemList(result.getItems());
+        infoListAdapter.addInfoItemList(filterRecentResults(result.getItems()));
 
         if (!result.getErrors().isEmpty()) {
             // nextPage should be non-null at this point, because it refers to the page
@@ -1137,6 +1237,78 @@ public class SearchFragment extends BaseListFragment<SearchInfo, ListExtractor.I
         // still holds the correct value during the error handling
         nextPage = result.getNextPage();
         super.handleNextItems(result);
+    }
+
+    private List<InfoItem> filterRecentResults(final List<? extends InfoItem> items) {
+        if (!onlyRecentResults) {
+            return new ArrayList<>(items);
+        }
+
+        return items.stream()
+                .filter(this::isRecentStreamItem)
+                .collect(Collectors.toList());
+    }
+
+    private boolean isRecentStreamItem(final InfoItem item) {
+        if (!(item instanceof StreamInfoItem)) {
+            return false;
+        }
+
+        final StreamInfoItem streamItem = (StreamInfoItem) item;
+        if (StreamTypeUtil.isLiveStream(streamItem.getStreamType())) {
+            return true;
+        }
+
+        final DateWrapper uploadDate = streamItem.getUploadDate();
+        if (uploadDate == null) {
+            return isTextualUploadDateRecent(streamItem.getTextualUploadDate());
+        }
+
+        return !uploadDate.offsetDateTime()
+                .isBefore(OffsetDateTime.now().minusDays(RECENT_RESULTS_DAYS));
+    }
+
+    private boolean isTextualUploadDateRecent(@Nullable final String textualUploadDate) {
+        if (TextUtils.isEmpty(textualUploadDate)) {
+            // If we can't determine it, keep it to avoid showing almost-empty tabs.
+            return true;
+        }
+
+        final String text = textualUploadDate.trim().toLowerCase();
+        if (text.contains("yesterday") || text.contains("ontem")) {
+            return true;
+        }
+
+        // Explicit old units -> not recent
+        if (text.contains("week") || text.contains("weeks")
+                || text.contains("semana") || text.contains("semanas")
+                || text.contains("month") || text.contains("months")
+                || text.contains("mes") || text.contains("mês") || text.contains("meses")
+                || text.contains("year") || text.contains("years")
+                || text.contains("ano") || text.contains("anos")) {
+            return false;
+        }
+
+        final Matcher matcher = RELATIVE_NUMBER_PATTERN.matcher(text);
+        if (!matcher.find()) {
+            // Unknown format: keep.
+            return true;
+        }
+
+        final int number;
+        try {
+            number = Integer.parseInt(matcher.group(1));
+        } catch (final NumberFormatException e) {
+            return true;
+        }
+
+        final String unit = matcher.group(2).toLowerCase();
+        if (unit.startsWith("day") || unit.startsWith("dia")) {
+            return number <= RECENT_RESULTS_DAYS;
+        }
+
+        // minutes/hours are always within 5 days
+        return true;
     }
 
     @Override

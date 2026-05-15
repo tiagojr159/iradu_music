@@ -20,10 +20,10 @@ public final class TabsJsonHelper {
     private static final String JSON_TABS_ARRAY_KEY = "tabs";
 
     private static final List<Tab> FALLBACK_INITIAL_TABS_LIST = List.of(
-            Tab.Type.IRADU_PROFILE.getTab(),
             Tab.Type.ROCK_SEARCH.getTab(),
             Tab.Type.LIVE_NEWS.getTab(),
             Tab.Type.TECH_NEWS.getTab(),
+            Tab.Type.IRADU_PROFILE.getTab(),
             Tab.Type.BOOKMARKS.getTab());
 
     private TabsJsonHelper() { }

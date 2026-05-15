@@ -53,10 +53,10 @@ public final class TabsManager {
 
     private List<Tab> getIraduTabs(final List<Tab> unusedTabs) {
         final ArrayList<Tab> iraduTabs = new ArrayList<>();
-        iraduTabs.add(Tab.Type.IRADU_PROFILE.getTab());
         iraduTabs.add(Tab.Type.ROCK_SEARCH.getTab());
         iraduTabs.add(Tab.Type.LIVE_NEWS.getTab());
         iraduTabs.add(Tab.Type.TECH_NEWS.getTab());
+        iraduTabs.add(Tab.Type.IRADU_PROFILE.getTab());
         iraduTabs.add(Tab.Type.BOOKMARKS.getTab());
         return iraduTabs;
     }

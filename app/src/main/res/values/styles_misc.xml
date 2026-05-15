@@ -32,7 +32,7 @@
         <item name="actionColor">@color/white</item>
         <item name="nnf_toolbarTheme">@style/ToolbarTheme</item>
 
-        <item name="android:windowBackground">@drawable/galaxy_background</item>
+        <item name="android:windowBackground">@drawable/ceu_estrelado</item>
         <item name="nnf_separator_color">@color/black_separator_color</item>
 
         <item name="alertDialogTheme">@style/FilePickerAlertDialogThemeDark</item>

@@ -189,13 +189,18 @@ public class MainFragment extends BaseFragment implements TabLayout.OnTabSelecte
         tabsList.clear();
         tabsList.addAll(tabsManager.getTabs());
 
-        if (pagerAdapter == null || !pagerAdapter.sameTabs(tabsList)) {
+        final boolean needsNewAdapter = pagerAdapter == null || !pagerAdapter.sameTabs(tabsList);
+        if (needsNewAdapter) {
             pagerAdapter = new SelectedTabsPagerAdapter(requireContext(),
                     getChildFragmentManager(), tabsList);
         }
 
-        binding.pager.setAdapter(null);
-        binding.pager.setAdapter(pagerAdapter);
+        if (binding.pager.getAdapter() != pagerAdapter) {
+            binding.pager.setAdapter(pagerAdapter);
+            binding.mainTabLayout.setupWithViewPager(binding.pager);
+        }
+
+        binding.pager.setOffscreenPageLimit(Math.max(1, tabsList.size() - 1));
 
         updateTabsIconAndDescription();
         updateTitleForTab(binding.pager.getCurrentItem());
@@ -215,7 +220,32 @@ public class MainFragment extends BaseFragment implements TabLayout.OnTabSelecte
     }
 
     private void updateTitleForTab(final int tabPosition) {
-        setTitle(tabsList.get(tabPosition).getTabName(requireContext()));
+        final ActionBar supportActionBar = activity.getSupportActionBar();
+        if (supportActionBar != null) {
+            supportActionBar.setDisplayShowTitleEnabled(false);
+        }
+    }
+
+    public void selectProfileTab() {
+        selectTabById(Tab.IraduProfileTab.ID);
+    }
+
+    public void selectTabPosition(final int position) {
+        if (binding == null || position < 0 || position >= tabsList.size()) {
+            return;
+        }
+        binding.pager.setCurrentItem(position, false);
+        updateTitleForTab(position);
+    }
+
+    public void selectTabById(final int tabId) {
+        for (int i = 0; i < tabsList.size(); i++) {
+            if (tabsList.get(i).getTabId() == tabId && binding != null) {
+                binding.pager.setCurrentItem(i, false);
+                updateTitleForTab(i);
+                return;
+            }
+        }
     }
 
     public void commitPlaylistTabs() {

@@ -8,29 +8,30 @@
     android:background="?attr/selectableItemBackground"
     android:clickable="true"
     android:focusable="true"
-    android:padding="@dimen/video_item_search_padding">
+    android:minHeight="104dp"
+    android:paddingHorizontal="10dp"
+    android:paddingVertical="6dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/itemPanel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/list_item_panel_background"
+        android:minHeight="92dp"
+        android:padding="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
     <ImageView
         android:id="@+id/itemThumbnailView"
         android:layout_width="@dimen/video_item_search_thumbnail_image_width"
         android:layout_height="@dimen/video_item_search_thumbnail_image_height"
-        android:scaleType="fitCenter"
+        android:scaleType="centerCrop"
         android:src="@drawable/placeholder_thumbnail_video"
         app:layout_constraintBottom_toTopOf="@+id/itemProgressView"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <View
-        android:id="@+id/itemTextScrim"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="@dimen/video_item_search_image_right_margin"
-        android:layout_marginTop="2dp"
-        android:layout_marginBottom="2dp"
-        android:background="@drawable/scrim_list_text_background"
-        app:layout_constraintBottom_toBottomOf="@+id/itemAdditionalDetails"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/itemThumbnailView"
         app:layout_constraintTop_toTopOf="parent" />
 
     <org.schabi.newpipe.views.NewPipeTextView
@@ -54,13 +55,13 @@
         android:id="@+id/itemVideoTitleView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/video_item_search_image_right_margin"
-        android:layout_marginEnd="10dp"
-        android:layout_marginTop="6dp"
+        android:layout_marginStart="12dp"
         android:ellipsize="end"
-        android:maxLines="2"
+        android:maxLines="3"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textSize="@dimen/video_item_search_title_text_size"
+        android:textColor="@color/white"
+        android:textSize="15sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/itemUploaderView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/itemThumbnailView"
@@ -71,11 +72,11 @@
         android:id="@+id/itemUploaderView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
         android:ellipsize="end"
         android:lines="1"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textSize="@dimen/video_item_search_uploader_text_size"
+        android:textColor="@color/white_secondary"
+        android:textSize="12sp"
         app:layout_constraintBottom_toTopOf="@+id/itemAdditionalDetails"
         app:layout_constraintEnd_toEndOf="@+id/itemVideoTitleView"
         app:layout_constraintStart_toStartOf="@+id/itemVideoTitleView"
@@ -86,12 +87,11 @@
         android:id="@+id/itemAdditionalDetails"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="6dp"
         android:ellipsize="end"
         android:lines="1"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textSize="@dimen/video_item_search_upload_date_text_size"
+        android:textColor="#AEB7C2"
+        android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/itemVideoTitleView"
         app:layout_constraintStart_toStartOf="@+id/itemVideoTitleView"
@@ -108,5 +108,7 @@
         app:layout_constraintEnd_toEndOf="@+id/itemThumbnailView"
         app:layout_constraintStart_toStartOf="@+id/itemThumbnailView"
         app:layout_constraintTop_toBottomOf="@+id/itemThumbnailView" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

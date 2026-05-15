@@ -261,9 +261,9 @@ public abstract class Tab {
 
         @Override
         public Fragment getFragment(final Context context) {
-            return SearchFragment.getInstance(
+            return SearchFragment.getRecentInstance(
                     ServiceHelper.getSelectedServiceId(context),
-                    "melhores bandas de rock melhores musicas rock classico rock nacional"
+                    "rock"
             );
         }
     }
@@ -289,9 +289,9 @@ public abstract class Tab {
 
         @Override
         public Fragment getFragment(final Context context) {
-            return SearchFragment.getInstance(
+            return SearchFragment.getRecentInstance(
                     ServiceHelper.getSelectedServiceId(context),
-                    "noticias ao vivo brasil globo news cnn brasil jovem pan news record news"
+                    "noticias"
             );
         }
     }
@@ -317,10 +317,9 @@ public abstract class Tab {
 
         @Override
         public Fragment getFragment(final Context context) {
-            return SearchFragment.getInstance(
+            return SearchFragment.getRecentInstance(
                     ServiceHelper.getSelectedServiceId(context),
-                    "inteligencia artificial programacao tecnologia ultimos 5 dias "
-                            + "codigo fonte tv rocketseat akita filipe deschamps"
+                    "inteligencia artificial"
             );
         }
     }

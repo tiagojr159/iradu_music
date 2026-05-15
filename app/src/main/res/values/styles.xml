@@ -51,7 +51,7 @@
         <item name="colorPrimary">@color/dark_youtube_primary_color</item>
         <item name="colorPrimaryDark">@color/dark_youtube_primary_color</item>
         <item name="colorAccent">@color/dark_youtube_accent_color</item>
-        <item name="android:windowBackground">@drawable/galaxy_background</item>
+        <item name="android:windowBackground">@drawable/ceu_estrelado</item>
         <item name="windowBackground">@color/dark_background_color</item>
 
         <item name="separator_color">@color/dark_separator_color</item>
@@ -72,7 +72,7 @@
 
     <!-- Black Theme -->
     <style name="Base.V21.BlackTheme" parent="DarkTheme">
-        <item name="android:windowBackground">@drawable/galaxy_background</item>
+        <item name="android:windowBackground">@drawable/ceu_estrelado</item>
         <item name="windowBackground">@color/black_background_color</item>
 
         <item name="separator_color">@color/black_separator_color</item>
