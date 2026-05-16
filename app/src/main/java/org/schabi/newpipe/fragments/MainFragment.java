@@ -110,6 +110,9 @@ public class MainFragment extends BaseFragment implements TabLayout.OnTabSelecte
         binding.mainTabLayout.addOnTabSelectedListener(this);
 
         setupTabs();
+        if (savedInstanceState == null) {
+            selectTabById(Tab.IraduProfileTab.ID);
+        }
         updateTabLayoutPosition();
     }
 

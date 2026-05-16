@@ -4,6 +4,7 @@
  */
 
 import com.android.build.api.dsl.ApplicationExtension
+import java.io.File
 import java.time.LocalDate
 
 plugins {
@@ -23,9 +24,7 @@ val gitWorkingBranch = providers.exec {
     isIgnoreExitValue = true
 }.standardOutput.asText.map { it.trim() }
 
-val datedAppName = LocalDate.now().let { date ->
-    "iradu music ${date.dayOfMonth}.${date.monthValue}"
-}
+val generatedDatedAppNameResDir = file("$buildDir/generated/datedAppName/res")
 
 java {
     toolchain {
@@ -48,7 +47,6 @@ configure<ApplicationExtension> {
 
     defaultConfig {
         applicationId = "org.polymorphicshade.tubular"
-        resValue("string", "app_name", datedAppName)
         minSdk = 21
         targetSdk = 35
 
@@ -74,17 +72,14 @@ configure<ApplicationExtension> {
             if (normalizedWorkingBranch.isEmpty() || workingBranch in defaultBranches) {
                 // default values when branch name could not be determined or is master or dev
                 applicationIdSuffix = ".debug"
-                resValue("string", "app_name", datedAppName)
             } else {
                 applicationIdSuffix = ".debug.$normalizedWorkingBranch"
-                resValue("string", "app_name", datedAppName)
             }
         }
 
         release {
             System.getProperty("packageSuffix")?.let { suffix ->
                 applicationIdSuffix = suffix
-                resValue("string", "app_name", datedAppName)
             }
             isMinifyEnabled = true
             isShrinkResources = true
@@ -108,6 +103,10 @@ configure<ApplicationExtension> {
     }
 
     sourceSets {
+        getByName("main") {
+            res.srcDir(generatedDatedAppNameResDir)
+        }
+
         getByName("androidTest") {
             assets.directories += "$projectDir/schemas"
         }
@@ -140,6 +139,31 @@ ksp {
     arg("room.schemaLocation", "$projectDir/schemas")
 }
 
+val generateDatedAppNameRes = tasks.register("generateDatedAppNameRes") {
+    val outputDir = generatedDatedAppNameResDir
+
+    outputs.dir(outputDir)
+    outputs.upToDateWhen { false }
+
+    doLast {
+        val date = LocalDate.now()
+        val valuesDir = File(outputDir, "values")
+        val appNameFile = File(valuesDir, "app_name.xml")
+        valuesDir.mkdirs()
+        appNameFile.writeText(
+            """
+            <?xml version="1.0" encoding="utf-8"?>
+            <resources>
+                <string name="app_name">iradu music ${date.dayOfMonth}.${date.monthValue}</string>
+            </resources>
+            """.trimIndent()
+        )
+    }
+}
+
+tasks.matching { it.name.matches(Regex("pre.*Build")) }.configureEach {
+    dependsOn(generateDatedAppNameRes)
+}
 
 // Custom dependency configuration for ktlint
 val ktlint by configurations.creating

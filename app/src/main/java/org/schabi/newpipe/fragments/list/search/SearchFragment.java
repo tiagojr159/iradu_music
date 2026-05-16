@@ -24,7 +24,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
@@ -112,7 +111,7 @@ public class SearchFragment extends BaseListFragment<SearchInfo, ListExtractor.I
     private static final int MAX_REMOTE_SUGGESTION_QUERY_LENGTH = 64;
     private static final int MAX_REMOTE_SUGGESTION_QUERY_WORDS = 6;
     private static final int RECENT_RESULTS_DAYS = 5;
-    private static final long AUTO_SEARCH_DEBOUNCE_MS = 450L;
+    private static final long AUTO_SEARCH_DEBOUNCE_MS = 3000L;
     private static final Pattern RELATIVE_NUMBER_PATTERN = Pattern.compile(
             "(\\d+)\\s*(min|mins|minute|minutes|minuto|minutos|h|hr|hrs|hour|hours|hora|horas"
                     + "|day|days|dia|dias)\\b",
@@ -600,27 +599,11 @@ public class SearchFragment extends BaseListFragment<SearchInfo, ListExtractor.I
             if (DEBUG) {
                 Log.d(TAG, "onClick() called with: v = [" + v + "]");
             }
-            if (isSearchEditBlank()) {
-                NavigationHelper.gotoMainFragment(getFM());
-                return;
-            }
             clearSearchInput();
         };
         searchClear.setOnClickListener(clearClickListener);
-        searchClear.setOnTouchListener((v, event) -> {
-            if (event.getAction() == MotionEvent.ACTION_UP) {
-                clearClickListener.onClick(v);
-            }
-            return false;
-        });
         if (searchClearIcon != null) {
             searchClearIcon.setOnClickListener(clearClickListener);
-            searchClearIcon.setOnTouchListener((v, event) -> {
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    clearClickListener.onClick(v);
-                }
-                return false;
-            });
         }
 
         TooltipCompat.setTooltipText(searchClear, getString(R.string.clear));
