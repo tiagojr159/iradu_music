@@ -51,6 +51,7 @@ import org.schabi.newpipe.player.playqueue.PlaylistPlayQueue;
 import org.schabi.newpipe.util.ExtractorHelper;
 import org.schabi.newpipe.util.Localization;
 import org.schabi.newpipe.util.NavigationHelper;
+import org.schabi.newpipe.util.OnClickGesture;
 import org.schabi.newpipe.util.PlayButtonHelper;
 import org.schabi.newpipe.util.external_communication.ShareUtils;
 import org.schabi.newpipe.util.image.CoilHelper;
@@ -143,6 +144,23 @@ public class PlaylistFragment extends BaseListInfoFragment<StreamInfoItem, Playl
         // Is mini variant still relevant?
         // Only the remote playlist screen uses it now
         infoListAdapter.setUseMiniVariant(true);
+    }
+
+    @Override
+    protected void initListeners() {
+        super.initListeners();
+
+        infoListAdapter.setOnStreamSelectedListener(new OnClickGesture<>() {
+            @Override
+            public void selected(final StreamInfoItem selectedItem) {
+                NavigationHelper.playOnMainPlayer(activity, getPlayQueueStartingAt(selectedItem));
+            }
+
+            @Override
+            public void held(final StreamInfoItem selectedItem) {
+                showInfoItemDialog(selectedItem);
+            }
+        });
     }
 
     private PlayQueue getPlayQueueStartingAt(final StreamInfoItem infoItem) {

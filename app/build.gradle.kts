@@ -46,7 +46,7 @@ configure<ApplicationExtension> {
     namespace = "org.schabi.newpipe"
 
     defaultConfig {
-        applicationId = "org.polymorphicshade.tubular"
+        applicationId = "com.iradu.music"
         minSdk = 21
         targetSdk = 35
 

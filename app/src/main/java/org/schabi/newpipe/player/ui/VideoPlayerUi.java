@@ -217,6 +217,7 @@ public abstract class VideoPlayerUi extends PlayerUi implements SeekBar.OnSeekBa
         binding.getRoot().setOnTouchListener(playerGestureListener);
 
         binding.repeatButton.setOnClickListener(v -> onRepeatClicked());
+        binding.repeatMainButton.setOnClickListener(v -> onRepeatClicked());
         binding.shuffleButton.setOnClickListener(v -> onShuffleClicked());
         binding.unskipButton.setOnClickListener(v -> onUnskipClicked());
         binding.skipButton.setOnClickListener(v -> onSkipClicked());
@@ -295,6 +296,7 @@ public abstract class VideoPlayerUi extends PlayerUi implements SeekBar.OnSeekBa
         gestureDetector = null;
 
         binding.repeatButton.setOnClickListener(null);
+        binding.repeatMainButton.setOnClickListener(null);
         binding.shuffleButton.setOnClickListener(null);
         binding.unskipButton.setOnClickListener(null);
         binding.skipButton.setOnClickListener(null);
@@ -992,16 +994,17 @@ public abstract class VideoPlayerUi extends PlayerUi implements SeekBar.OnSeekBa
     public void onRepeatModeChanged(@RepeatMode final int repeatMode) {
         super.onRepeatModeChanged(repeatMode);
 
+        final int repeatIcon;
         if (repeatMode == REPEAT_MODE_ALL) {
-            binding.repeatButton.setImageResource(
-                    com.google.android.exoplayer2.ui.R.drawable.exo_controls_repeat_all);
+            repeatIcon = com.google.android.exoplayer2.ui.R.drawable.exo_controls_repeat_all;
         } else if (repeatMode == REPEAT_MODE_ONE) {
-            binding.repeatButton.setImageResource(
-                    com.google.android.exoplayer2.ui.R.drawable.exo_controls_repeat_one);
+            repeatIcon = com.google.android.exoplayer2.ui.R.drawable.exo_controls_repeat_one;
         } else /* repeatMode == REPEAT_MODE_OFF */ {
-            binding.repeatButton.setImageResource(
-                    com.google.android.exoplayer2.ui.R.drawable.exo_controls_repeat_off);
+            repeatIcon = com.google.android.exoplayer2.ui.R.drawable.exo_controls_repeat_off;
         }
+
+        binding.repeatButton.setImageResource(repeatIcon);
+        binding.repeatMainButton.setImageResource(repeatIcon);
     }
 
     @Override

@@ -186,9 +186,7 @@ public class LocalPlaylistFragment extends BaseLocalListFragment<List<PlaylistSt
             @Override
             public void selected(final LocalItem selectedItem) {
                 if (selectedItem instanceof PlaylistStreamEntry entry) {
-                    final StreamEntity item = entry.getStreamEntity();
-                    NavigationHelper.openVideoDetailFragment(requireContext(), getFM(),
-                            item.getServiceId(), item.getUrl(), item.getTitle(), null, false);
+                    NavigationHelper.playOnMainPlayer(activity, getPlayQueueStartingAt(entry));
                 }
             }
 

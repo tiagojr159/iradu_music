@@ -1697,10 +1697,13 @@ public final class VideoDetailFragment
         if (!info.getErrors().isEmpty()) {
             // Bandcamp fan pages are not yet supported and thus a ContentNotAvailableException is
             // thrown. This is not an error and thus should not be shown to the user.
-            for (final Throwable throwable : info.getErrors()) {
-                if (throwable instanceof ContentNotSupportedException
-                        && "Fan pages are not supported".equals(throwable.getMessage())) {
-                    info.getErrors().remove(throwable);
+            for (final Iterator<Throwable> iterator = info.getErrors().iterator();
+                 iterator.hasNext();) {
+                final Throwable throwable = iterator.next();
+                if ((throwable instanceof ContentNotSupportedException
+                        && "Fan pages are not supported".equals(throwable.getMessage()))
+                        || isRelatedItemDurationParsingError(throwable)) {
+                    iterator.remove();
                 }
             }
 
@@ -1721,6 +1724,13 @@ public final class VideoDetailFragment
         binding.detailControlsPopup.setVisibility(noVideoStreams ? View.GONE : View.VISIBLE);
         binding.detailThumbnailPlayButton.setImageResource(
                 noVideoStreams ? R.drawable.ic_headset_shadow : R.drawable.ic_play_arrow_shadow);
+    }
+
+    private boolean isRelatedItemDurationParsingError(final Throwable throwable) {
+        final String message = throwable.getMessage();
+        return message != null
+                && (message.contains("Could not get duration")
+                || message.contains("No parsable durations detected"));
     }
 
     private void displayViewCount(@NonNull final StreamInfo info) {

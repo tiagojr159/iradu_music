@@ -1,4 +1,4 @@
-[Tubular]
+﻿[Iradu Music]
 
 Updated:
-• merged latest changes from NewPipe's dev branch
+â€¢ merged latest changes from Iradu Music's dev branch

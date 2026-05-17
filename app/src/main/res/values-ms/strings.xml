@@ -108,10 +108,10 @@
     <string name="always">Sentiasa</string>
     <string name="just_once">Hanya sekali</string>
     <string name="file">Fail</string>
-    <string name="notification_channel_name">Pemberitahuan Tubular</string>
-    <string name="notification_channel_description">Pemberitahuan untuk pemain latar belakang dan pemain popup Tubular</string>
+    <string name="notification_channel_name">Pemberitahuan Iradu Music</string>
+    <string name="notification_channel_description">Pemberitahuan untuk pemain latar belakang dan pemain popup Iradu Music</string>
     <string name="app_update_notification_channel_name">Pemberitahuan Kemas Kini App</string>
-    <string name="app_update_notification_channel_description">Pemberitahuan untuk versi Tubular baru</string>
+    <string name="app_update_notification_channel_description">Pemberitahuan untuk versi Iradu Music baru</string>
     <string name="unknown_content">[Tidak diketahui]</string>
     <string name="switch_to_background">Beralih ke Latar Belakang</string>
     <string name="switch_to_popup">Beralih ke Popup</string>
@@ -192,9 +192,9 @@
     <string name="msg_name">Nama fail</string>
     <string name="msg_threads">Thread</string>
     <string name="msg_error">Ralat</string>
-    <string name="msg_running">Tubular sedang memuat turun</string>
+    <string name="msg_running">Iradu Music sedang memuat turun</string>
     <string name="msg_running_detail">Ketuk untuk butiran</string>
-    <string name="msg_wait">Sila tunggu…</string>
+    <string name="msg_wait">Sila tungguâ€¦</string>
     <string name="msg_copied">Disalin ke papan klip</string>
     <string name="no_available_dir">Sila pilih folder muat turun nanti dalam tetapan</string>
     <string name="msg_popup_permission">Kebenaran ini diperlukan untuk
@@ -208,9 +208,9 @@
     <string name="settings_file_replacement_character_title">Karakter pengganti</string>
     <string name="charset_letters_and_digits">Huruf dan angka</string>
     <string name="charset_most_special_characters">Karakter yang paling istimewa</string>
-    <string name="title_activity_about">Tentang Tubular</string>
+    <string name="title_activity_about">Tentang Iradu Music</string>
     <string name="title_licenses">Lesen Pihak Ketiga</string>
-    <string name="copyright" formatted="true">© %1$s oleh %2$s di bawah %3$s</string>
+    <string name="copyright" formatted="true">Â© %1$s oleh %2$s di bawah %3$s</string>
     <string name="tab_about">Tentang</string>
     <string name="tab_licenses">Lesen</string>
     <string name="app_description">Aplikasi strim yang percuma dan ringan untuk Android.</string>
@@ -218,16 +218,16 @@
     <string name="contribution_encouragement">Sama ada anda mempunyai idea; terjemahan, perubahan reka bentuk, pembersihan kod, atau perubahan kod sebenar yang berat-bantuan sentiasa dialu-alukan. Semakin banyak yang dilakukan semakin baik!</string>
     <string name="view_on_github">Lihat di GitHub</string>
     <string name="donation_title">Derma</string>
-    <string name="donation_encouragement">NewPipe dibangunkan oleh sukarelawan menghabiskan masa membawa pengalaman terbaik. Beri balik untuk membantu pemaju membuat Tubular lebih baik sambil menikmati secawan kopi.</string>
+    <string name="donation_encouragement">Iradu Music dibangunkan oleh sukarelawan menghabiskan masa membawa pengalaman terbaik. Beri balik untuk membantu pemaju membuat Iradu Music lebih baik sambil menikmati secawan kopi.</string>
     <string name="give_back">Bagi balik</string>
     <string name="website_title">Laman Web</string>
-    <string name="website_encouragement">Lawati Laman Web NewPipe untuk maklumat lanjut dan berita.</string>
-    <string name="privacy_policy_title">Dasar Privasi NewPipe</string>
-    <string name="privacy_policy_encouragement">Projek NewPipe mengambil perhatian privasi anda dengan sangat serius. Oleh itu, aplikasi tidak mengumpulkan sebarang data tanpa persetujuan anda.
-\nDasar privasi NewPipe menerangkan secara terperinci apa data dihantar dan disimpan apabila anda menghantar laporan ranap.</string>
+    <string name="website_encouragement">Lawati Laman Web Iradu Music untuk maklumat lanjut dan berita.</string>
+    <string name="privacy_policy_title">Dasar Privasi Iradu Music</string>
+    <string name="privacy_policy_encouragement">Projek Iradu Music mengambil perhatian privasi anda dengan sangat serius. Oleh itu, aplikasi tidak mengumpulkan sebarang data tanpa persetujuan anda.
+\nDasar privasi Iradu Music menerangkan secara terperinci apa data dihantar dan disimpan apabila anda menghantar laporan ranap.</string>
     <string name="read_privacy_policy">Baca dasar privasi</string>
-    <string name="app_license_title">Lesen Tubular</string>
-    <string name="app_license">Tubular adalah perisian copyleft percuma: Anda boleh menggunakan, berkongsi kajian dan memperbaikinya mengikut kehendak. Khususnya anda boleh mengagihkan semula dan / atau mengubahnya di bawah syarat GNU General Public License seperti yang diterbitkan oleh Free Software Foundation, sama ada versi 3 dari Lesen, atau (pada pilihan anda) versi yang lebih baru.</string>
+    <string name="app_license_title">Lesen Iradu Music</string>
+    <string name="app_license">Iradu Music adalah perisian copyleft percuma: Anda boleh menggunakan, berkongsi kajian dan memperbaikinya mengikut kehendak. Khususnya anda boleh mengagihkan semula dan / atau mengubahnya di bawah syarat GNU General Public License seperti yang diterbitkan oleh Free Software Foundation, sama ada versi 3 dari Lesen, atau (pada pilihan anda) versi yang lebih baru.</string>
     <string name="read_full_license">Baca lesen</string>
     <string name="title_activity_history">Sejarah</string>
     <string name="action_history">Sejarah</string>
@@ -261,12 +261,12 @@
     <string name="drawer_open">Buka Laci</string>
     <string name="drawer_close">Tutup Laci</string>
     <string name="preferred_open_action_settings_title">Tindakan \'buka\' yang diinginkan</string>
-    <string name="preferred_open_action_settings_summary">Tindakan utama apabila membuka kandungan — %s</string>
+    <string name="preferred_open_action_settings_summary">Tindakan utama apabila membuka kandungan â€” %s</string>
     <string name="video_player">Pemain video</string>
     <string name="background_player">Pemain latar belakang</string>
     <string name="popup_player">Pemain popup</string>
     <string name="always_ask_open_action">Selalu bertanya</string>
-    <string name="preferred_player_fetcher_notification_title">Mendapatkan maklumat…</string>
+    <string name="preferred_player_fetcher_notification_title">Mendapatkan maklumatâ€¦</string>
     <string name="preferred_player_fetcher_notification_message">Memuatkan kandungan yang diminta</string>
     <string name="create_playlist">Senarai Main Baru</string>
     <string name="rename_playlist">Namakan semula</string>
@@ -292,8 +292,8 @@
     <string name="import_title">Import</string>
     <string name="import_from">Import dari</string>
     <string name="export_to">Eksport ke</string>
-    <string name="import_ongoing">Mengimport…</string>
-    <string name="export_ongoing">Mengeksport…</string>
+    <string name="import_ongoing">Mengimportâ€¦</string>
+    <string name="export_ongoing">Mengeksportâ€¦</string>
     <string name="import_file_title">Import fail</string>
     <string name="previous_export">Eksport terdahulu</string>
     <string name="subscriptions_import_unsuccessful">Tidak dapat mengimport langganan</string>
@@ -320,7 +320,7 @@
     <string name="skip_silence_checkbox">Cepat ke hadapan semasa berdiam diri</string>
     <string name="playback_step">Langkah</string>
     <string name="playback_reset">Tetapkan semula</string>
-    <string name="start_accept_privacy_policy">Untuk mematuhi Peraturan Perlindungan Data Umum Eropah (GDPR), kami dengan ini menarik perhatian anda kepada dasar privasi Tubular. Sila baca dengan teliti.
+    <string name="start_accept_privacy_policy">Untuk mematuhi Peraturan Perlindungan Data Umum Eropah (GDPR), kami dengan ini menarik perhatian anda kepada dasar privasi Iradu Music. Sila baca dengan teliti.
 \nAnda mesti menerimanya untuk menghantar laporan bug kepada kami.</string>
     <string name="accept">Terima</string>
     <string name="decline">Tolak</string>
@@ -329,7 +329,7 @@
     <string name="updates_setting_title">Kemas kini</string>
     <string name="updates_setting_description">Tunjukkan pemberitahuan untuk mengemaskini aplikasi apabila versi baru tersedia</string>
     <string name="minimize_on_exit_title">Kurangkan apabila beralih app</string>
-    <string name="minimize_on_exit_summary">Tindakan apabila beralih ke app lain dari pemain video utama — %s</string>
+    <string name="minimize_on_exit_summary">Tindakan apabila beralih ke app lain dari pemain video utama â€” %s</string>
     <string name="minimize_on_exit_none_description">Tiada</string>
     <string name="minimize_on_exit_background_description">Kurangkan ke pemain latar belakang</string>
     <string name="minimize_on_exit_popup_description">Kurangkan ke pemain popup</string>
@@ -337,7 +337,7 @@
     <string name="list">Senarai</string>
     <string name="grid">Grid</string>
     <string name="auto">Auto</string>
-    <string name="app_update_available_notification_title">Kemas kini Tubular Tersedia!</string>
+    <string name="app_update_available_notification_title">Kemas kini Iradu Music Tersedia!</string>
     <string name="missions_header_finished">Selesai</string>
     <string name="paused">dijeda</string>
     <string name="queued">telah beratur</string>
@@ -380,7 +380,7 @@
     <plurals name="videos">
         <item quantity="other">%s video</item>
     </plurals>
-    <string name="infinite_videos">∞ video</string>
+    <string name="infinite_videos">âˆž video</string>
     <string name="more_than_100_videos">100+ video</string>
     <string name="no_one_listening">Tidak ada yang mendengarkan</string>
     <plurals name="watching">

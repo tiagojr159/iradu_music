@@ -1,12 +1,12 @@
-[Tubular]
+﻿[Iradu Music]
 
 Updated:
-• merged latest changes from NewPipe's master branch
+â€¢ merged latest changes from Iradu Music's master branch
 
 Improved:
-• fixed some gesture stuff
+â€¢ fixed some gesture stuff
 
 Added:
-• max playback speed is now adjustable
-• now seek can be used (instead of skip) on external media button events
-• swipe areas are now adjustable 
+â€¢ max playback speed is now adjustable
+â€¢ now seek can be used (instead of skip) on external media button events
+â€¢ swipe areas are now adjustable 

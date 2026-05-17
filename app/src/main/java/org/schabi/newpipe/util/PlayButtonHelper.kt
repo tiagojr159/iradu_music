@@ -49,6 +49,10 @@ object PlayButtonHelper {
             NavigationHelper.playOnBackgroundPlayer(activity, fragment.getPlayQueue(), false)
             showHoldToAppendToastIfNeeded(activity)
         }
+        playlistControlBinding.playlistCtrlShuffleButton.setOnClickListener {
+            NavigationHelper.playOnMainPlayer(activity, fragment.getShuffledQueue())
+            showHoldToAppendToastIfNeeded(activity)
+        }
 
         // long click listener
         playlistControlBinding.playlistCtrlPlayAllButton.setOnLongClickListener {
@@ -61,6 +65,10 @@ object PlayButtonHelper {
         }
         playlistControlBinding.playlistCtrlPlayBgButton.setOnLongClickListener {
             NavigationHelper.enqueueOnPlayer(activity, fragment.getPlayQueue(), PlayerType.AUDIO)
+            true
+        }
+        playlistControlBinding.playlistCtrlShuffleButton.setOnLongClickListener {
+            NavigationHelper.enqueueOnPlayer(activity, fragment.getShuffledQueue(), PlayerType.MAIN)
             true
         }
     }

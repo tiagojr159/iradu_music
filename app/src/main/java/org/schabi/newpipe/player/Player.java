@@ -1398,11 +1398,45 @@ public final class Player implements PlaybackListener, Listener {
 
         UIs.call(PlayerUi::onCompleted);
 
-        if (playQueue.getIndex() < playQueue.size() - 1) {
-            playQueue.offsetIndex(+1);
+        if (continueQueueAfterCompleted()) {
+            return;
         }
+
         if (isProgressLoopRunning()) {
             stopProgressLoop();
+        }
+    }
+
+    private boolean continueQueueAfterCompleted() {
+        if (playQueue == null || playQueue.isEmpty() || getRepeatMode() == REPEAT_MODE_ONE) {
+            return false;
+        }
+
+        final int currentIndex = playQueue.getIndex();
+        final int lastIndex = playQueue.size() - 1;
+        if (currentIndex < lastIndex) {
+            playQueue.offsetIndex(+1);
+            resumeAfterQueueAdvance();
+            return true;
+        }
+
+        if (!playQueue.isComplete()) {
+            playQueue.fetch();
+            return true;
+        }
+
+        if (playQueue.size() > 1) {
+            playQueue.setIndex(0);
+            resumeAfterQueueAdvance();
+            return true;
+        }
+
+        return false;
+    }
+
+    private void resumeAfterQueueAdvance() {
+        if (!exoPlayerIsNull()) {
+            simpleExoPlayer.play();
         }
     }
     //endregion
@@ -2171,6 +2205,10 @@ public final class Player implements PlaybackListener, Listener {
 
     @Override
     public void onPlayQueueEdited() {
+        if (currentState == STATE_COMPLETED && continueQueueAfterCompleted()) {
+            return;
+        }
+
         notifyPlaybackUpdateToListeners();
         UIs.call(PlayerUi::onPlayQueueEdited);
     }

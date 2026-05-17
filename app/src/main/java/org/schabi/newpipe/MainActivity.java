@@ -323,13 +323,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void changeService(final MenuItem item) {
-        drawerLayoutBinding.navigation.getMenu()
-                .getItem(ServiceHelper.getSelectedServiceId(this))
-                .setChecked(false);
+        final Menu menu = drawerLayoutBinding.navigation.getMenu();
+        final MenuItem currentItem = menu.findItem(ServiceHelper.getSelectedServiceId(this));
+        if (currentItem != null) {
+            currentItem.setChecked(false);
+        }
         ServiceHelper.setSelectedServiceId(this, item.getItemId());
-        drawerLayoutBinding.navigation.getMenu()
-                .getItem(ServiceHelper.getSelectedServiceId(this))
-                .setChecked(true);
+        final MenuItem selectedItem = menu.findItem(ServiceHelper.getSelectedServiceId(this));
+        if (selectedItem != null) {
+            selectedItem.setChecked(true);
+        }
     }
 
     private void tabSelected(final MenuItem item) {
@@ -383,18 +386,18 @@ public class MainActivity extends AppCompatActivity {
     private void setupDrawerHeader() {
         drawerHeaderBinding.drawerHeaderActionButton.setOnClickListener(view -> toggleServices());
 
-        // If the current app name is bigger than the default "Tubular" (7 chars),
+        // If the current app name is bigger than the default compact title,
         // let the text view grow a little more as well.
-        if (getString(R.string.app_name).length() > "Tubular".length()) {
+        if (getString(R.string.app_name).length() > "Iradu".length()) {
             final ViewGroup.LayoutParams layoutParams =
-                    drawerHeaderBinding.drawerHeaderNewpipeTitle.getLayoutParams();
+                    drawerHeaderBinding.drawerHeaderIraduMusicTitle.getLayoutParams();
             layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT;
-            drawerHeaderBinding.drawerHeaderNewpipeTitle.setLayoutParams(layoutParams);
-            drawerHeaderBinding.drawerHeaderNewpipeTitle.setMaxLines(2);
-            drawerHeaderBinding.drawerHeaderNewpipeTitle.setMinWidth(getResources()
-                    .getDimensionPixelSize(R.dimen.drawer_header_newpipe_title_default_width));
-            drawerHeaderBinding.drawerHeaderNewpipeTitle.setMaxWidth(getResources()
-                    .getDimensionPixelSize(R.dimen.drawer_header_newpipe_title_max_width));
+            drawerHeaderBinding.drawerHeaderIraduMusicTitle.setLayoutParams(layoutParams);
+            drawerHeaderBinding.drawerHeaderIraduMusicTitle.setMaxLines(2);
+            drawerHeaderBinding.drawerHeaderIraduMusicTitle.setMinWidth(getResources()
+                    .getDimensionPixelSize(R.dimen.drawer_header_iradu_music_title_default_width));
+            drawerHeaderBinding.drawerHeaderIraduMusicTitle.setMaxWidth(getResources()
+                    .getDimensionPixelSize(R.dimen.drawer_header_iradu_music_title_max_width));
         }
     }
 
@@ -423,6 +426,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void showServices() {
         for (final StreamingService s : NewPipe.getServices()) {
+            if (shouldHideServiceInDrawer(s)) {
+                continue;
+            }
+
             final String title = s.getServiceInfo().getName();
 
             final MenuItem menuItem = drawerLayoutBinding.navigation.getMenu()
@@ -434,9 +441,22 @@ public class MainActivity extends AppCompatActivity {
                 enhancePeertubeMenu(menuItem);
             }
         }
-        drawerLayoutBinding.navigation.getMenu()
-                .getItem(ServiceHelper.getSelectedServiceId(this))
-                .setChecked(true);
+        final MenuItem selectedItem = drawerLayoutBinding.navigation.getMenu()
+                .findItem(ServiceHelper.getSelectedServiceId(this));
+        if (selectedItem != null) {
+            selectedItem.setChecked(true);
+        }
+    }
+
+    private boolean shouldHideServiceInDrawer(final StreamingService service) {
+        final int serviceId = service.getServiceId();
+        final String serviceName = service.getServiceInfo().getName();
+        return serviceId == 2
+                || serviceId == 3
+                || serviceId == 4
+                || "media.ccc.de".equalsIgnoreCase(serviceName)
+                || "FramaTube".equalsIgnoreCase(serviceName)
+                || "Bandcamp".equalsIgnoreCase(serviceName);
     }
 
     private void enhancePeertubeMenu(final MenuItem menuItem) {
